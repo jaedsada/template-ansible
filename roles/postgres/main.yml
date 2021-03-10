@@ -1,0 +1,39 @@
+- hosts: web1
+  remote_user: dev
+  vars:
+    allow_world_readable_tmpfiles: true
+    ansible_ssh_pipelining: true
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: apt-get update
+      shell: "sudo apt-get update"
+    - name: install psql
+      shell: "sudo apt-get install postgresql postgresql-contrib python3-psycopg2 -y"
+      tags: install
+    - name: create postgresql user
+      postgresql_user:
+        user: "root"
+        password: "root"
+        role_attr_flags: "CREATEDB,NOSUPERUSER"
+      become: true
+      become_user: postgres
+      tags: createUser
+    - name: create postgresql db
+      postgresql_db:
+        name: "tickets_db"
+        state: present
+      become: true
+      become_user: postgres
+      tags: createDB
+    - name: update postgres client configuration
+      become: true
+      copy: src=../pg_hba.conf dest=/etc/postgresql/12/main/pg_hba.conf
+      tags: access
+    - name: update postgres db configuration
+      become: true
+      copy: src=../postgresql.conf dest=/etc/postgresql/12/main/postgresql.conf
+      tags: access
+    - name: start postgresql
+      become: true
+      service: name=postgresql state=restarted enabled=yes
+      tags: access

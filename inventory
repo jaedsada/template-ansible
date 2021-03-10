@@ -1,0 +1,2 @@
+[web1]
+server ansible_host=xxxxx

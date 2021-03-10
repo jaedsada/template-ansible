@@ -1,6 +1,0 @@
-- hosts: application-server
-  remote_user: root
-  tasks:
-    - name: test connection
-      ping:
-      remote_user: ubuntu

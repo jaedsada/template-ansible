@@ -1,0 +1,14 @@
+- name: apt-get update
+  shell: "sudo apt-get update"
+- name: install nginx
+  shell: "sudo apt-get install nginx -y"
+- name: chown sites-available
+  shell: "sudo chown -R $USER:$USER /etc/nginx/sites-available"
+- name: cp default
+  shell: "sudo mv /etc/nginx/sites-available/default /etc/nginx/sites-available/__default"
+- name: Copy NGINX Config File
+  copy: src=../nginx.conf dest=/etc/nginx/sites-available/default
+  tags: copy
+- name: Restart NGINX Service
+  service: name=nginx state=restarted
+  tags: restart
