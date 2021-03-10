@@ -1,0 +1,15 @@
+- name: apt-get update
+  become: true
+  shell: "apt-get update"
+- name: install openjdk
+  become: true
+  shell: "apt-get install openjdk-11-jdk libfontconfig libffi-dev libncurses5-dev -y"
+- name: init
+  become: true
+  shell: "wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add - && sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list' && apt-get update"
+- name: install jenkins
+  become: true
+  shell: "apt-get install jenkins -y"
+- name: start jenkins
+  become: true
+  shell: "systemctl start jenkins"
